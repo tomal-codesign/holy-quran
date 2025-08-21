@@ -1,20 +1,80 @@
-import { Input } from '@/components/ui/input'
+"use client"
+import { surahApi } from '@/services/surahApi';
+import { surah } from '@/types/surah';
 import { Icon } from '@iconify/react/dist/iconify.js'
-import React from 'react'
+import { Button, Input } from 'antd';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react'
+import SurahCard from '@/components/surah-card/SurahCard';
+import SurahCardSkeleton from '@/components/skeleton/SurahCardSkeleton';
 // import img from  "../../../public"
 
 const page = () => {
+    // Fetch surahs data from the API
+    const [loading, setLoading] = useState(false);
+    const [allSurahs, setAllSurahs] = React.useState<surah[]>([]);
+    const [surahs, setSurahs] = React.useState<surah[]>([]);
+    useEffect(() => {
+        const fetchSurahs = async () => {
+            setLoading(true);
+            try {
+                const data = await surahApi.getAllSurahs();
+                data.map((surah: surah, index: number) => surah.id = index + 1);
+                setAllSurahs(data);
+                setSurahs(data);
+            } catch (error) {
+                console.error('Error fetching surahs:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSurahs();
+    }, []);
+    const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value.toLowerCase();
+
+        if (!query) {
+            setSurahs(allSurahs);
+            return;
+        }
+
+        const filtered = allSurahs.filter((surah) =>
+            surah.surahName.toLowerCase().includes(query) ||
+            surah.surahNameTranslation.toLowerCase().includes(query)
+        );
+
+        setSurahs(filtered);
+    };
+
     return (
         <div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
                 <div className='bg-[url(/search-bg.jpg)] px-16 py-20 flex flex-col items-center gap-6 rounded-3xl'>
                     <h2 className='text-3xl font-bold text-white'>Read the Quran, feel the peace.</h2>
-                    <div className='relative w-full md:w-1/2 lg:w-1/2 rounded-full'>
+                    <div className='relative w-full md:w-1/2 lg:w-1/2 rounded-full text-white'>
                         <Input
-                            className='w-full rounded-full bg-white/30 backdrop-blur-md h-11 text-white border border-white/40 pl-11 pr-18'
-                            placeholder='Search Surah...' />
-                        <Icon className='absolute left-4 top-1/2 -translate-y-1/2' icon="ic:sharp-search" width="20" height="20" />
-                        <span className='absolute right-4 top-1/2 -translate-y-1/2 text-[#ddd] text-[12px] bg-white/30 py-1 px-3 rounded-full'>Enter</span>
+                            className='w-full !rounded-full !bg-white/30 backdrop-blur-md h-11 !text-white border !border-white/40 pl-11 pr-18'
+                            size="large" placeholder="Search Surah..."
+                            prefix={<Icon icon="ic:sharp-search" width="20" height="20" />}
+                            onChange={onSearch}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10'>
+                    <h2 className='text-2xl font-bold mb-6'>Surahs</h2>
+                    <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6'>
+                        {loading ? (
+                            Array.from({ length: 10 }).map((_, index) => (
+                                <SurahCardSkeleton key={index} />
+                            ))
+                        ) : surahs.length === 0 ? (
+                            <div className='col-span-2 text-center text-gray-500'>No Surahs found</div>
+                        ) : null}
+                        {surahs.map((surah, index) => (
+                            <SurahCard key={index} surah={surah} />
+                        ))}
                     </div>
                 </div>
             </div>

@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+
+@font-face {
+  font-family: "UthmanTNB";
+  src: url("/fonts/UthmanTNB.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BenSen.ttf";
+  src: url("/fonts/BenSen.ttf") format("truetype");
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -22,7 +35,7 @@
 body {
 
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: roboto;
   position: relative;
 
   &::after {
@@ -38,5 +51,15 @@ body {
     background-repeat: no-repeat;
     z-index: -1;
     /* Ensure it stays behind other content */
+  }
+}
+
+input {
+  // line-height: 3 !important;
+  font-size: 15px !important;
+
+  &::placeholder {
+    color: rgb(255, 255, 255, 0.7) !important;
+    opacity: 1;
   }
 }
