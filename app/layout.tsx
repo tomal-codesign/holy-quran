@@ -5,6 +5,7 @@ import "antd/dist/reset.css";
 import Navbar from "../components/navbar/navbar";
 
 import { Roboto } from "next/font/google";
+import Footer from "@/components/footer/footer";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
