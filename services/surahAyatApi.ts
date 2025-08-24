@@ -1,4 +1,4 @@
-export const surahApi = {
+export const surahAyatApi = {
     getAllSurahs: async () => {
         const response = await fetch('https://quranapi.pages.dev/api/surah.json');
         if (!response.ok) {

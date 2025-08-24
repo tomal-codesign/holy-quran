@@ -1,5 +1,5 @@
 "use client"
-import { surahApi } from '@/services/surahApi';
+import { surahApi } from '@/services/allSurahApi';
 import { surah } from '@/types/surah';
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { Button, Input } from 'antd';
@@ -7,6 +7,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import SurahCard from '@/components/surah-card/SurahCard';
 import SurahCardSkeleton from '@/components/skeleton/SurahCardSkeleton';
+import Link from 'next/link';
 // import img from  "../../../public"
 
 const page = () => {
@@ -73,7 +74,9 @@ const page = () => {
                             <div className='col-span-2 text-center text-gray-500'>No Surahs found</div>
                         ) : null}
                         {surahs.map((surah, index) => (
-                            <SurahCard key={index} surah={surah} />
+                            <Link href={`/surah/${surah.id}`} key={index} >
+                                <SurahCard surah={surah} />
+                            </Link>
                         ))}
                     </div>
                 </div>

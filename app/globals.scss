@@ -63,3 +63,20 @@ input {
     opacity: 1;
   }
 }
+
+// common-dropdown
+.common-dropdown {
+  .ant-select-selector {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #171717 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    border-radius: 0.75rem !important; // rounded-lg
+  }
+
+  .ant-select-arrow {
+    color: rgba(0, 0, 0, 0.45);
+  }
+}
