@@ -71,7 +71,6 @@ const SingleAyat = ({ ayatId, surahId }: Props) => {
     };
 
     const handleChange = (value: string) => {
-        console.log(`selected ${value}`);
         setSelectedAudio(value);
         playAudio(value);
     };

@@ -44,7 +44,6 @@ const page = () => {
     }, [params.slug]);
 
     const handleChange = (value: string) => {
-        console.log(`selected ${value}`);
         setSelectedAudio(value);
         playAudio(value);
         setAudioUrl(value);
