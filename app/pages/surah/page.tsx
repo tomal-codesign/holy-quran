@@ -74,7 +74,7 @@ const page = () => {
                             <div className='col-span-2 text-center text-gray-500'>No Surahs found</div>
                         ) : null}
                         {surahs.map((surah, index) => (
-                            <Link href={`/surah/${surah.id}`} key={index} >
+                            <Link href={`/pages/surah/${surah.id}`} key={index} >
                                 <SurahCard surah={surah} />
                             </Link>
                         ))}

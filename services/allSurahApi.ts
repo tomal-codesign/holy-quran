@@ -1,4 +1,4 @@
-import { surahDetails } from "@/types/surah";
+import { ayatDetails, surahDetails } from "@/types/surah";
 
 export const surahApi = {
     getAllSurahs: async () => {
@@ -15,4 +15,11 @@ export const surahApi = {
         }
         return response.json();
     },
+    getAyahById: async (surahId: number, ayahId: number): Promise<ayatDetails> => {
+        const response = await fetch(`https://quranapi.pages.dev/api/${surahId}/${ayahId}.json`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch ayah');
+        }
+        return response.json();
+    }
 }
