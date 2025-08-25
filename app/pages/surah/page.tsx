@@ -2,13 +2,11 @@
 import { surahApi } from '@/services/allSurahApi';
 import { surah } from '@/types/surah';
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { Button, Input } from 'antd';
-import Image from 'next/image';
+import { Input } from 'antd';
 import React, { useEffect, useState } from 'react'
 import SurahCard from '@/components/surah-card/SurahCard';
 import SurahCardSkeleton from '@/components/skeleton/SurahCardSkeleton';
 import Link from 'next/link';
-// import img from  "../../../public"
 
 const page = () => {
     // Fetch surahs data from the API
@@ -32,20 +30,27 @@ const page = () => {
         fetchSurahs();
     }, []);
     const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const query = e.target.value.toLowerCase();
+        const query = e.target.value.toLowerCase().trim();
 
         if (!query) {
             setSurahs(allSurahs);
             return;
         }
 
-        const filtered = allSurahs.filter((surah) =>
-            surah.surahName.toLowerCase().includes(query) ||
-            surah.surahNameTranslation.toLowerCase().includes(query)
-        );
+        // Split query into words
+        const words = query.split(/\s+/);
+
+        const filtered = allSurahs.filter((surah) => {
+            const name = surah.surahName.toLowerCase();
+            const translation = surah.surahNameTranslation.toLowerCase();
+
+            // Check if any word is included
+            return words.some(word => name.includes(word) || translation.includes(word));
+        });
 
         setSurahs(filtered);
     };
+
 
     return (
         <div>

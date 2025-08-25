@@ -1,6 +1,6 @@
 "use client";
-import React, { use, useEffect, useState } from 'react'
-import { Button, Select, Space } from "antd";
+import React, { useEffect, useState } from 'react'
+import { Button, Select } from "antd";
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useParams } from 'next/navigation';
 import { surahApi } from '@/services/allSurahApi';
@@ -18,15 +18,12 @@ const page = () => {
     const [audioObj, setAudioObj] = useState<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
-    console.log("Slug:", params.slug);
-
     useEffect(() => {
         // Fetch surah details using params.slug here
         (async () => {
             setLoading(true);
             try {
                 const data = await surahApi.getSurahById(Number(params.slug));
-                console.log("Surah Data:", data);
                 const suraAudio = Object.values(data.audio).map((item: any) => ({
                     value: item.originalUrl,
                     label: item.reciter
@@ -36,6 +33,7 @@ const page = () => {
                 if (suraAudio.length > 0) {
                     setSelectedAudio(suraAudio[0].value);
                     playAudio(suraAudio[0].value);
+                    setAudioUrl(suraAudio[0].value);
                 }
             } catch (error) {
                 console.error('Error fetching surah details:', error);
@@ -49,6 +47,7 @@ const page = () => {
         console.log(`selected ${value}`);
         setSelectedAudio(value);
         playAudio(value);
+        setAudioUrl(value);
     };
 
     const playAudio = (url: string) => {

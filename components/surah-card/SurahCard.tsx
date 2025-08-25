@@ -16,7 +16,7 @@ type surah = {
 const SurahCard = ({ surah }: { surah: surah }) => {
     return (
         <div className=' rounded-3xl bg-white/50 backdrop-blur-md shadow-md flex items-center'>
-            <div className='w-18 h-full flex items-center justify-center text-xl font-bold text-gray-700 rounded-l-lg border-r border-gray-300'>
+            <div className='w-18 h-[80px] flex items-center justify-center text-xl font-bold text-gray-700 rounded-l-lg border-r border-gray-300'>
                 {(surah.id).toString().padStart(2, "0")}
             </div>
             <div className='p-4 flex-1 flex justify-between items-center gap-4'>
