@@ -104,8 +104,8 @@ const SingleAyat = ({ ayatId, surahId }: Props) => {
                     </div>
                     <div className='p-6 flex flex-col gap-6'>
                         <p className='text-gray-700 text-[36px] !m-0 text-right font-["BenSen"] leading-[1.6]'>{ayahDetails?.arabic1}</p>
-                        <p className='text-gray-700 text-md !m-0 '>"{ayahDetails?.english}"</p>
-                        <p className='text-gray-700 text-md font-["UthmanTNB"] !m-0'>"{ayahDetails?.bengali}"</p>
+                        <p className='text-gray-700 text-md !m-0 leading-[1.6]'>"{ayahDetails?.english}"</p>
+                        <p className='text-gray-700 text-md font-["UthmanTNB"] !m-0 leading-[1.6]' >"{ayahDetails?.bengali}"</p>
                     </div>
                 </div>}
         </>
