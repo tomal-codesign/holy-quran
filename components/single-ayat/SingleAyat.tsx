@@ -97,7 +97,7 @@ const SingleAyat = ({ ayatId, surahId, isTafsir = true }: Props) => {
                             <Button
                                 shape="circle"
                                 icon={<Icon icon={isPlaying ? "iconoir:pause-solid" : "iconoir:play-solid"} width="20" height="20" />}
-                                className="bg-white shadow-md !w-10 !h-10 !border-none"
+                                className="bg-white !shadow-sm !w-10 !h-10 !border-none"
                                 onClick={handlePlay}
                             />
                         </div>
@@ -107,8 +107,8 @@ const SingleAyat = ({ ayatId, surahId, isTafsir = true }: Props) => {
                                     pathname: `/pages/surah/${surahId}/tafsir`,
                                     query: { surahId: surahId, ayatId: ayatId }
                                 }}
-                                className='text-gray-800 !m-0 bg-white h-[56px] px-5 flex items-center justify-center shadow-sm p-2 rounded-xl'>
-                                Tafsir
+                                className='text-gray-800 !m-0 bg-white/05 backdrop-blur-md h-[56px] px-5 flex items-center justify-center gap-2 shadow-sm p-2 rounded-xl'>
+                                <Icon icon="hugeicons:book-02" width="20" height="20" /> Tafsir
                             </Link>
                         }
                     </div>

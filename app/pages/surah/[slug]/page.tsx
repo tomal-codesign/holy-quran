@@ -2,13 +2,14 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Select } from "antd";
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { surahApi } from '@/services/allSurahApi';
 import { surahDetails } from '@/types/surah';
 import SingleAyat from '@/components/single-ayat/SingleAyat';
 import SingleAyatSkeleton from '@/components/single-ayat-skeleton/SingleAyatSkeleton';
 
 const page = () => {
+    const router = useRouter();
     const params = useParams<{ slug: string }>();
     const [loading, setLoading] = useState(false);
     const [surahDetails, setSurahDetails] = useState<surahDetails | null>(null);
@@ -97,6 +98,28 @@ const page = () => {
     return (
         <div>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10'>
+                <div className='flex items-center gap-3 mb-6'>
+                    {/* Back button */}
+                    <button
+                        onClick={() => router.back()}
+                        className="mb-4 w-12 h-12 bg-white hover:bg-green-600 hover:!text-white text-gray-700 rounded-lg cursor-pointer flex gap-2 items-center justify-center"
+                    >
+                        <Icon icon="material-symbols:arrow-back-rounded" width="22" height="22" />
+                    </button>
+
+                    {/* Surah title */}
+                    <div className='flex-1 flex justify-between items-center gap-4'>
+                        <div className='flex flex-col gap-1'>
+                            <h1 className="text-md font-bold text-gray-800 !m-0 p-0">
+                                {surahDetails?.surahName}
+                            </h1>
+                            <p className="text-sm font-normal text-gray-800 !m-0 p-0">Ayahs: {surahDetails?.totalAyah}</p>
+                        </div>
+                        <div className="text-3xl text-gray-800" dir="rtl" style={{ fontFamily: 'UthmanicHafs1' }}>
+                            {surahDetails?.surahNameArabic}
+                        </div>
+                    </div>
+                </div>
 
                 {loading ? <SingleAyatSkeleton /> :
                     <div className="rounded-3xl bg-white/50 backdrop-blur-md shadow-md flex items-center justify-between p-4 mb-6">
@@ -120,14 +143,14 @@ const page = () => {
                             <Button
                                 shape="circle"
                                 icon={<Icon icon={isPlaying ? "iconoir:pause-solid" : "iconoir:play-solid"} width="20" height="20" />}
-                                className="bg-white shadow-md !w-10 !h-10 !border-none"
+                                className="bg-white !shadow-sm !w-10 !h-10 !border-none"
                                 onClick={handlePlay}
                             />
                             {/* Download Button */}
                             <Button
                                 shape="circle"
                                 icon={<Icon icon="material-symbols:download-rounded" width="20" height="20" />}
-                                className="bg-white shadow-md !w-10 !h-10 !border-none"
+                                className="bg-white !shadow-sm !w-10 !h-10 !border-none"
                                 onClick={downloadAudio}
                             />
                         </div>
