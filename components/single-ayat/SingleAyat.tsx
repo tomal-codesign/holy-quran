@@ -4,18 +4,19 @@ import { Button, Select } from 'antd'
 import React, { use, useEffect, useState } from 'react'
 import SingleAyatSkeleton from '../single-ayat-skeleton/SingleAyatSkeleton';
 import { ayatDetails } from '@/types/surah';
+import Link from 'next/link';
 type Props = {
     ayatId?: number;
-    surahId?: any;
+    surahId?: number;
+    isTafsir?: boolean;
 }
 
-const SingleAyat = ({ ayatId, surahId }: Props) => {
+const SingleAyat = ({ ayatId, surahId, isTafsir = true }: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [ayahDetails, setAyahDetails] = useState<ayatDetails | null>(null);
     const [selectedAudio, setSelectedAudio] = useState<string | undefined>(undefined);
     const [suraAudio, setSuraAudio] = useState<{ value: string, label: string }[]>([]);
-    const [audioUrl, setAudioUrl] = useState<string | null>(null);
     const [audioObj, setAudioObj] = useState<HTMLAudioElement | null>(null);
 
     useEffect(() => {
@@ -100,6 +101,16 @@ const SingleAyat = ({ ayatId, surahId }: Props) => {
                                 onClick={handlePlay}
                             />
                         </div>
+                        {isTafsir &&
+                            <Link
+                                href={{
+                                    pathname: `/pages/surah/${surahId}/tafsir`,
+                                    query: { surahId: surahId, ayatId: ayatId }
+                                }}
+                                className='text-gray-800 !m-0 bg-white h-[56px] px-5 flex items-center justify-center shadow-sm p-2 rounded-xl'>
+                                Tafsir
+                            </Link>
+                        }
                     </div>
                     <div className='p-6 flex flex-col gap-6'>
                         <p className='text-gray-700 text-[36px] !m-0 text-right font-["BenSen"] leading-[1.6]'>{ayahDetails?.arabic1}</p>

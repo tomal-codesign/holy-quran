@@ -95,46 +95,48 @@ const page = () => {
     };
 
     return (
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10'>
+        <div>
+            <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10'>
 
-            {loading ? <SingleAyatSkeleton /> :
-                <div className="rounded-3xl bg-white/50 backdrop-blur-md shadow-md flex items-center justify-between p-4 mb-6">
-                    {/* Left side (Surah name + subtitle) */}
-                    <div className="flex flex-col gap-1">
-                        <h2 className="text-xl font-semibold text-gray-800 !m-0">{surahDetails?.surahName}</h2>
-                        <p className="text-sm text-gray-500 !m-0 ">{surahDetails?.surahNameTranslation}</p>
-                    </div>
+                {loading ? <SingleAyatSkeleton /> :
+                    <div className="rounded-3xl bg-white/50 backdrop-blur-md shadow-md flex items-center justify-between p-4 mb-6">
+                        {/* Left side (Surah name + subtitle) */}
+                        <div className="flex flex-col gap-1">
+                            <h2 className="text-xl font-semibold text-gray-800 !m-0">{surahDetails?.surahName}</h2>
+                            <p className="text-sm text-gray-500 !m-0 ">{surahDetails?.surahNameTranslation}</p>
+                        </div>
 
-                    {/* Right side (Dropdown + buttons) */}
-                    <div className="flex items-center gap-2 bg-white/05 backdrop-blur-md shadow-sm p-2 rounded-xl  ">
-                        <div className='common-dropdown'>
-                            <Select
-                                value={selectedAudio}
-                                style={{ width: 200 }}
-                                onChange={handleChange}
-                                options={suraAudio || []}
+                        {/* Right side (Dropdown + buttons) */}
+                        <div className="flex items-center gap-2 bg-white/05 backdrop-blur-md shadow-sm p-2 rounded-xl  ">
+                            <div className='common-dropdown'>
+                                <Select
+                                    value={selectedAudio}
+                                    style={{ width: 200 }}
+                                    onChange={handleChange}
+                                    options={suraAudio || []}
+                                />
+                            </div>
+                            {/* Play Button */}
+                            <Button
+                                shape="circle"
+                                icon={<Icon icon={isPlaying ? "iconoir:pause-solid" : "iconoir:play-solid"} width="20" height="20" />}
+                                className="bg-white shadow-md !w-10 !h-10 !border-none"
+                                onClick={handlePlay}
+                            />
+                            {/* Download Button */}
+                            <Button
+                                shape="circle"
+                                icon={<Icon icon="material-symbols:download-rounded" width="20" height="20" />}
+                                className="bg-white shadow-md !w-10 !h-10 !border-none"
+                                onClick={downloadAudio}
                             />
                         </div>
-                        {/* Play Button */}
-                        <Button
-                            shape="circle"
-                            icon={<Icon icon={isPlaying ? "iconoir:pause-solid" : "iconoir:play-solid"} width="20" height="20" />}
-                            className="bg-white shadow-md !w-10 !h-10 !border-none"
-                            onClick={handlePlay}
-                        />
-                        {/* Download Button */}
-                        <Button
-                            shape="circle"
-                            icon={<Icon icon="material-symbols:download-rounded" width="20" height="20" />}
-                            className="bg-white shadow-md !w-10 !h-10 !border-none"
-                            onClick={downloadAudio}
-                        />
-                    </div>
-                </div>}
-            <div className='flex flex-col gap-4'>
-                {Array.from({ length: surahDetails?.totalAyah || 0 }).map((_, i) => (
-                    <SingleAyat key={i} surahId={surahDetails!.surahNo} ayatId={i + 1} />
-                ))}
+                    </div>}
+                <div className='flex flex-col gap-4'>
+                    {Array.from({ length: surahDetails?.totalAyah || 0 }).map((_, i) => (
+                        <SingleAyat key={i} surahId={surahDetails!.surahNo} ayatId={i + 1} />
+                    ))}
+                </div>
             </div>
         </div>
     )

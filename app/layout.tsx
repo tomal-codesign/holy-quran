@@ -29,9 +29,11 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} antialiased`}
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <div className="min-h-screen grid grid-rows-[auto_1fr_auto]">
+          <Navbar />
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   );
