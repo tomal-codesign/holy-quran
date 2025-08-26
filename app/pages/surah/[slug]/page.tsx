@@ -116,7 +116,7 @@ const page = () => {
                             <p className="text-sm font-normal text-gray-800 !m-0 p-0">Ayahs: {surahDetails?.totalAyah}</p>
                         </div>
                         <div className="text-3xl text-gray-800" dir="rtl" style={{ fontFamily: 'UthmanicHafs1' }}>
-                            {surahDetails?.surahNameArabic}
+                            {surahDetails?.surahNameArabicLong}
                         </div>
                     </div>
                 </div>
