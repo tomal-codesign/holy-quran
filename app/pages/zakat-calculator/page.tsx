@@ -1,8 +1,7 @@
 "use client";
-import { islamApi } from "@/services/islamicApi/islamicApi";
+import { islamApi } from "@/services/islamicApi/allIslamicApi";
 import { ZakatNisab } from "@/types/zakatNisab";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Input } from "antd";
 import { useEffect, useState } from "react";
 
 const zakatData = {
