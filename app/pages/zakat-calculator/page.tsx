@@ -1,6 +1,6 @@
 "use client";
 import { islamApi } from "@/services/islamicApi/allIslamicApi";
-import { ZakatNisab } from "@/types/zakatNisabType";
+import { ZakatNisabType } from "@/types/zakatNisabType";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
 
@@ -25,7 +25,7 @@ const page = () => {
     const [standard, setStandard] = useState<"gold" | "silver">("gold");
     const [zakat, setZakat] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [zakatNisab, setZakatNisab] = useState<ZakatNisab | null>(null);
+    const [zakatNisab, setZakatNisab] = useState<ZakatNisabType | null>(null);
     const [zakatDropdown, setZakatDropdown] = useState<{ value: string; label: string }[] | null>();
 
     useEffect(() => {
