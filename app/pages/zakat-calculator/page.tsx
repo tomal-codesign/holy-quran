@@ -1,6 +1,6 @@
 "use client";
 import { islamApi } from "@/services/islamicApi/allIslamicApi";
-import { ZakatNisab } from "@/types/zakatNisab";
+import { ZakatNisab } from "@/types/zakatNisabType";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 

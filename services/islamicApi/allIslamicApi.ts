@@ -1,4 +1,4 @@
-import { ZakatNisab } from "@/types/zakatNisab";
+import { ZakatNisab } from "@/types/zakatNisabType";
 
 const apiKey = "DLkEQmpZUzbG5lFJ54G9CabGtEHjwS6jB0bkdVgkSI1azuRi"
 
