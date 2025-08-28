@@ -80,3 +80,9 @@ input {
     color: rgba(0, 0, 0, 0.45);
   }
 }
+
+.calculator-dropdown {
+  .ant-select-selector {
+    border-radius: 0.75rem !important;
+  }
+}
