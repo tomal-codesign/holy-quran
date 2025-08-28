@@ -2,7 +2,7 @@
 import { islamApi } from "@/services/islamicApi/allIslamicApi";
 import { ZakatNisab } from "@/types/zakatNisabType";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const zakatData = {
     nisab_thresholds: {
