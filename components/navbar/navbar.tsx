@@ -11,6 +11,7 @@ export default function Navbar() {
     const menuItems = [
         { title: "Home", href: "/pages/home", icon: "mdi:home" },
         { title: "Surahs", href: "/pages/surah", icon: "mdi:book-open-page-variant" },
+        { title: "Zakat Calculator", href: "/pages/zakat-calculator", icon: "mdi:book-education-outline" },
         { title: "Tafseer", href: "/tafseer", icon: "mdi:book-education-outline" },
         { title: "Bookmarks", href: "/bookmark", icon: "mdi:bookmark" },
         { title: "Dua", href: "/dua", icon: "mdi:hand-pray", isButton: true },

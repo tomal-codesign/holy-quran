@@ -128,7 +128,7 @@ const page = () => {
                         {/* Calculate Button */}
                         <button
                             onClick={calculateZakat}
-                            className="w-full py-3 cursor-pointer rounded-xl text-white font-semibold shadow-md bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 transition"
+                            className="w-full py-3 cursor-pointer rounded-xl !text-white font-semibold shadow-md bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 transition"
                         >
                             Calculate
                         </button>
