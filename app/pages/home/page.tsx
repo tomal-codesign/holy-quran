@@ -8,12 +8,12 @@ import { PrayerData } from "@/types/prayerData";
 
 // 🔹 Icon Map for each prayer
 const iconMap: Record<string, string> = {
-  Fajr: "solar:sunrise-bold-duotone",
+  Fajr: "fluent-color:weather-sunny-low-24",
   Sunrise: "mdi:weather-sunset-up",
   Dhuhr: "mdi:white-balance-sunny",
-  Asr: "mdi:weather-sunny-alert",
-  Maghrib: "mdi:weather-sunset-down",
-  Isha: "mdi:weather-night",
+  Asr: "meteocons:partly-cloudy-day-fill",
+  Maghrib: "fluent-color:cloud-48",
+  Isha: "meteocons:partly-cloudy-night-sleet-fill",
   Imsak: "mdi:alarm",
   Midnight: "mdi:moon-waning-crescent",
   Firstthird: "mdi:clock-time-five-outline",
@@ -21,6 +21,7 @@ const iconMap: Record<string, string> = {
 };
 
 const Page = () => {
+  const [coords, setCoords] = useState<{ lat: number; lon: number; city?: string } | null>(null);
   const [nextPrayer, setNextPrayer] = useState<{ name: string; time: Date } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [prayerData, setPrayerData] = useState<PrayerData | null>(null);
@@ -30,19 +31,62 @@ const Page = () => {
   const [prohibitedTimes, setProhibitedTimes] = useState<
     { name: string; start: Date; end: Date }[]
   >([]);
-  const coords = useCurrentLocation();
 
-  // 🔹 Fetch Prayer Times when location is available
+  // ✅ Check localStorage first
+  useEffect(() => {
+    const savedCoords = localStorage.getItem("userCoords");
+
+    if (savedCoords) {
+      setCoords(JSON.parse(savedCoords));
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const newCoords = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            city: "",
+          };
+
+          try {
+            // 🌍 Reverse geocoding (OpenStreetMap API)
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`
+            );
+            const data = await res.json();
+
+            newCoords.city =
+              data.address.city ||
+              data.address.town ||
+              data.address.village ||
+              data.address.county ||
+              data.address.state ||
+              "Unknown";
+
+          } catch (err) {
+            console.error("City fetch error:", err);
+            newCoords.city = "Unknown";
+          }
+
+          setCoords(newCoords);
+          localStorage.setItem("userCoords", JSON.stringify(newCoords));
+        },
+        (err) => {
+          console.error("Location error:", err);
+        }
+      );
+    }
+  }, []);
+
+
+
+  // 🔹 Fetch Prayer Times
   useEffect(() => {
     if (!coords) return;
-
-    const { lat, lon } = coords;
-    if (!lat || !lon) return;
 
     (async () => {
       setIsLoading(true);
       try {
-        const response = await islamApi.getPrayerTime(lat.toString(), lon.toString());
+        const response = await islamApi.getPrayerTime(coords.lat.toString(), coords.lon.toString());
         setPrayerData(response);
       } catch (error) {
         console.error("Error fetching prayer times:", error);
@@ -71,7 +115,7 @@ const Page = () => {
       date.setHours(hour, minute);
       date.setMinutes(date.getMinutes() - minutes);
       return date;
-    }
+    };
 
     // ✅ Prayer times
     const prayers = [
@@ -109,12 +153,11 @@ const Page = () => {
 
     setPrayerTimes(prayers);
 
-    // ✅ Next prayer calculation
     const now = new Date();
     const upcoming = prayers.find((p) => p.time > now);
     setNextPrayer(upcoming || prayers[0]);
 
-    // ✅ Prohibited times calculation
+    // ✅ Prohibited times
     const sunrise = parseTime(prayerData.data.times.Sunrise);
     const dhuhr = parseTime(prayerData.data.times.Dhuhr);
     const maghrib = parseTime(prayerData.data.times.Maghrib);
@@ -134,7 +177,6 @@ const Page = () => {
       { name: "Before Maghrib", start: beforeMaghrib, end: maghrib },
     ]);
   }, [prayerData]);
-
   return (
     <div className="bg-gradient-to-br from-indigo-900 via-sky-800 to-emerald-700 text-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
@@ -142,15 +184,27 @@ const Page = () => {
           {/* Left Side: Info + Image */}
           <div>
             <h1 className="text-4xl font-bold mb-4">Prayer Times</h1>
-            <p className="text-gray-300 mb-2">
-              📅 {prayerData?.data.date.readable} (
+            <p className="text-gray-300 mb-2 flex items-center gap-2">
+              <Icon icon="fluent-color:calendar-32" width="24" height="24" />{prayerData?.data.date.readable} (
               {prayerData?.data.date.hijri.weekday.en},{" "}
               {Number(prayerData?.data.date.hijri.day) + 1}{" "}
               {prayerData?.data.date.hijri.month.en}{" "}
               {prayerData?.data.date.hijri.year} AH)
             </p>
             <p className="text-gray-400 mb-6">
-              📍 Location: {coords?.city || "Detecting..."}
+              <span className="flex items-center gap-2">
+                <Icon icon="fluent-color:location-ripple-20" width="24" height="24" /> Location: {coords?.city || "Detecting..."}
+                <button
+                  className="cursor-pointer underline !text-yellow-600 hover:!text-yellow-700 rounded-md text-sm"
+                  onClick={() => {
+                    localStorage.removeItem("userCoords");
+                    setCoords(null);
+                    window.location.reload();
+                  }}
+                  type="button">
+                  Reset Location
+                </button>
+              </span>
             </p>
 
             <div className="w-full text-center">
