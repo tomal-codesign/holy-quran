@@ -86,3 +86,20 @@ input {
     border-radius: 0.75rem !important;
   }
 }
+
+.ant-timeline {
+  .ant-timeline-item {
+    padding-bottom: 5px !important;
+    &:last-child {
+      padding-bottom: 0 !important;
+    }
+  }
+  .ant-timeline-item-tail{
+    background-color: #d1d5db60; // gray-300
+    inset-inline-start: 5px;
+  }
+  .ant-timeline-item-head{
+    width: 12px;
+    height: 12px;
+  }
+}
