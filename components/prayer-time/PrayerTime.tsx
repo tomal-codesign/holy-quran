@@ -7,7 +7,7 @@ import { Timeline } from "antd";
 import { useCurrentLocation } from "@/app/hooks/useCurrentLocation"; // if unused, remove
 import { islamApi } from "@/services/islamicApi/allIslamicApi";
 import type { PrayerData } from "@/types/prayerData";
-import { format, parse } from "date-fns";
+import { format, parse, subMinutes } from "date-fns";
 
 // Static icons (tree-shakable)
 import Fajr from "../../public/prayer/fajr.png";
@@ -293,7 +293,7 @@ const PrayerTime: React.FC = () => {
 
                         <div>
                             <div>
-                                <h1 className="text-2xl">{`${!currentPrayer?.name ? "Next" : "Current"}: ${!currentPrayer?.name ? nextPrayer?.name : currentPrayer?.name}`}</h1>
+                                <h1 className="text-4xl font-bold">{`${!currentPrayer?.name ? "Next" : "Current"}: ${!currentPrayer?.name ? nextPrayer?.name : currentPrayer?.name}`}</h1>
 
                                 {currentPrayer ? (
                                     <div className="flex flex-col gap-4">
@@ -312,42 +312,70 @@ const PrayerTime: React.FC = () => {
 
                                 )}
                             </div>
-                                <div className="w-full max-w-md space-y-6">
-
-                                    {/* Sehri Card */}
-                                    <div className="p-6 rounded-3xl bg-indigo-500/30 backdrop-blur-md border border-indigo-300 shadow-xl text-center text-white">
-                                        <div className="flex justify-center items-center gap-2 text-xl font-semibold">
-                                            <Icon icon="mdi:weather-night" className="w-7 h-7 text-yellow-300" />
-                                            <span>সেহরির শেষ সময়</span>
-                                        </div>
-                                        <p className="text-4xl font-bold mt-3 text-yellow-200">04:25 AM</p>
-                                    </div>
-
-                                    {/* Iftar Card */}
-                                    <div className="p-6 rounded-3xl bg-emerald-500/30 backdrop-blur-md border border-emerald-300 shadow-xl text-center text-white">
-                                        <div className="flex justify-center items-center gap-2 text-xl font-semibold">
-                                            <Icon icon="mdi:weather-sunset" className="w-7 h-7 text-orange-300" />
-                                            <span>ইফতারের সময়</span>
-                                        </div>
-                                        <p className="text-4xl font-bold mt-3 text-orange-200">04:25 AM</p>
-                                    </div>
-
+                            <div className="my-6 mx-6">
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-sm text-gray-300 !m-0 !mt-0.5">Sehri time Start</p>
+                                    <p className="!text-lg text-white !font-semibold !m-0">
+                                        {prayerData?.data?.times?.Fajr
+                                            ? format(
+                                                subMinutes(
+                                                    parse(prayerData.data.times.Fajr, "HH:mm", new Date()),
+                                                    1
+                                                ),
+                                                "hh:mm a"
+                                            )
+                                            : "--"}
+                                    </p>
                                 </div>
-                            <p className="text-gray-400 italic text-sm text-center">
-                                Note: Prayer times are calculated based on your location. Please ensure your device's location services are enabled for accurate results.
-                            </p>
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-sm text-gray-300 !m-0 !mt-0.5">Iftar time</p>
+                                    <p className="!text-lg text-white !font-semibold !m-0">
+                                        {prayerData?.data?.times?.Maghrib
+                                            ? format(
+                                                parse(prayerData.data.times.Maghrib, "HH:mm", new Date()),
+                                                "hh:mm a"
+                                            )
+                                            : "--"}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col lg:flex-row gap-4">
+
+                                {/* Sehri Card */}
+                                <div className="p-6 rounded-3xl bg-indigo-500/30 backdrop-blur-md border border-indigo-300 shadow-xl text-center text-white !m-0">
+                                    <div className="flex justify-center items-center gap-2 text-xl font-semibold">
+                                        <Icon icon="mdi:weather-night" className="w-7 h-7 text-yellow-300" />
+                                        <span>সেহরির শেষ সময়</span>
+                                    </div>
+                                    <p className="text-4xl font-bold mt-3 text-yellow-200 !m-0">04:25 AM</p>
+                                </div>
+
+                                {/* Iftar Card */}
+                                <div className="p-6 rounded-3xl bg-emerald-500/30 backdrop-blur-md border border-emerald-300 shadow-xl text-center text-white">
+                                    <div className="flex justify-center items-center gap-2 text-xl font-semibold">
+                                        <Icon icon="mdi:weather-sunset" className="w-7 h-7 text-orange-300" />
+                                        <span>ইফতারের সময়</span>
+                                    </div>
+                                    <p className="text-4xl font-bold mt-3 text-orange-200 !m-0">04:25 AM</p>
+                                </div>
+
+                            </div>
 
                             {activeProhibited && (
                                 <div className="grid grid-cols-1 gap-4">
-                                    <div className="p-4 rounded-2xl bg-red-400/40 border border-red-400">
-                                        <p className="text-yellow-200 text-sm mt-2 italic">
-                                            ⏳ Prohibited time is running: {
+                                    <div className="p-2 rounded-2xl bg-red-400/40 border border-red-400">
+                                        <p className="text-yellow-200 text-sm !m-0 flex items-center gap-2">
+                                            <Icon icon="fluent-emoji-flat:prohibited" width="20" height="20" /> Prohibited time is running:
+                                            {
                                                 prohibitedCountdowns.find((c) => c.name === activeProhibited.name)?.countdown
                                             }
                                         </p>
                                     </div>
                                 </div>
                             )}
+                            <p className="text-gray-400 italic text-sm text-center">
+                                Note: Prayer times are calculated based on your location. Please ensure your device's location services are enabled for accurate results.
+                            </p>
                         </div>
                     </div>
 
