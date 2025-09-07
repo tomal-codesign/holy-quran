@@ -283,16 +283,21 @@ const PrayerTime: React.FC = () => {
                             </span>
                         </p>
 
-                        <div className="w-full text-center py-10">
-                            {currentPrayer ? (
-                                <Image src={{ Fajr, Dhuhr, Asr, Maghrib, Isha }[currentPrayer.name]} alt={currentPrayer.name} width={200} height={200} />
-                            ) : (
-                                <Image src={Fajr} alt="Fajr" width={200} height={200} />
-                            )}
+                        <div className="w-full text-center opacity-60 h-[200px]">
+                            <Image src='/banner-bg.png' alt="banner-bg" className="w-full" width={800} height={800} />
                         </div>
 
-                        <div>
-                            <div>
+                        <div className="relative z-0">
+                            <div className="absolute top-0 right-0 -z-10 opacity-20">
+                                {currentPrayer ? (
+                                    <Image src={currentPrayer.icon} alt="banner-bg" className="w-full" width={100} height={100} />
+                                ) :
+                                    (
+                                        <Image src={nextPrayer?.icon} alt="banner-bg" className="w-full" width={100} height={100} />
+                                    )
+                                }
+                            </div>
+                            <div className="relative z-20">
                                 <h1 className="text-4xl font-bold">{`${!currentPrayer?.name ? "Next" : "Current"}: ${!currentPrayer?.name ? nextPrayer?.name : currentPrayer?.name}`}</h1>
 
                                 {currentPrayer ? (
@@ -312,57 +317,8 @@ const PrayerTime: React.FC = () => {
 
                                 )}
                             </div>
-                            <div className="my-6 mx-6">
-                                <div className="flex flex-col gap-1">
-                                    <p className="text-sm text-gray-300 !m-0 !mt-0.5">Sehri time Start</p>
-                                    <p className="!text-lg text-white !font-semibold !m-0">
-                                        {prayerData?.data?.times?.Fajr
-                                            ? format(
-                                                subMinutes(
-                                                    parse(prayerData.data.times.Fajr, "HH:mm", new Date()),
-                                                    1
-                                                ),
-                                                "hh:mm a"
-                                            )
-                                            : "--"}
-                                    </p>
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <p className="text-sm text-gray-300 !m-0 !mt-0.5">Iftar time</p>
-                                    <p className="!text-lg text-white !font-semibold !m-0">
-                                        {prayerData?.data?.times?.Maghrib
-                                            ? format(
-                                                parse(prayerData.data.times.Maghrib, "HH:mm", new Date()),
-                                                "hh:mm a"
-                                            )
-                                            : "--"}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex flex-col lg:flex-row gap-4">
-
-                                {/* Sehri Card */}
-                                <div className="p-6 rounded-3xl bg-indigo-500/30 backdrop-blur-md border border-indigo-300 shadow-xl text-center text-white !m-0">
-                                    <div className="flex justify-center items-center gap-2 text-xl font-semibold">
-                                        <Icon icon="mdi:weather-night" className="w-7 h-7 text-yellow-300" />
-                                        <span>সেহরির শেষ সময়</span>
-                                    </div>
-                                    <p className="text-4xl font-bold mt-3 text-yellow-200 !m-0">04:25 AM</p>
-                                </div>
-
-                                {/* Iftar Card */}
-                                <div className="p-6 rounded-3xl bg-emerald-500/30 backdrop-blur-md border border-emerald-300 shadow-xl text-center text-white">
-                                    <div className="flex justify-center items-center gap-2 text-xl font-semibold">
-                                        <Icon icon="mdi:weather-sunset" className="w-7 h-7 text-orange-300" />
-                                        <span>ইফতারের সময়</span>
-                                    </div>
-                                    <p className="text-4xl font-bold mt-3 text-orange-200 !m-0">04:25 AM</p>
-                                </div>
-
-                            </div>
-
                             {activeProhibited && (
-                                <div className="grid grid-cols-1 gap-4">
+                                <div className="grid grid-cols-1 gap-4 mt-4 relative z-20">
                                     <div className="p-2 rounded-2xl bg-red-400/40 border border-red-400">
                                         <p className="text-yellow-200 text-sm !m-0 flex items-center gap-2">
                                             <Icon icon="fluent-emoji-flat:prohibited" width="20" height="20" /> Prohibited time is running:
@@ -373,7 +329,45 @@ const PrayerTime: React.FC = () => {
                                     </div>
                                 </div>
                             )}
-                            <p className="text-gray-400 italic text-sm text-center">
+                            <div className="my-6 grid grid-cols-2 gap-4 relative z-20">
+                                <div className="flex items-center gap-4 bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                                    <div className="bg-white/20 p-2 rounded-xl">
+                                        <Icon icon="f7:moon-zzz" width="30" height="30" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-300 !m-0">Sehri time Start</p>
+                                        <p className="!text-lg text-white !font-semibold !m-0 leading-4">
+                                            {prayerData?.data?.times?.Fajr
+                                                ? format(
+                                                    subMinutes(
+                                                        parse(prayerData.data.times.Fajr, "HH:mm", new Date()),
+                                                        1
+                                                    ),
+                                                    "hh:mm a"
+                                                )
+                                                : "--"}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4 bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                                    <div className="bg-white/20 p-2 rounded-xl">
+                                        <Icon icon="solar:sunset-linear" width="30" height="30" />
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-300 !m-0">Iftar time</p>
+                                        <p className="!text-lg text-white !font-semibold !m-0 leading-4">
+                                            {prayerData?.data?.times?.Maghrib
+                                                ? format(
+                                                    parse(prayerData.data.times.Maghrib, "HH:mm", new Date()),
+                                                    "hh:mm a"
+                                                )
+                                                : "--"}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-gray-400 italic text-sm text-center relative z-20">
                                 Note: Prayer times are calculated based on your location. Please ensure your device's location services are enabled for accurate results.
                             </p>
                         </div>
@@ -382,7 +376,7 @@ const PrayerTime: React.FC = () => {
                     {/* Right Side: Prayer Times + Prohibited */}
                     <div className="space-y-10 col-span-9 lg:col-span-5">
                         {/* ✅ Prayer Cards */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             {prayers.map((p) => {
                                 const isNext = nextPrayer?.name === p.name;
                                 return (
@@ -432,7 +426,7 @@ const PrayerTime: React.FC = () => {
                         </div>
 
                         {/* ✅ Prohibited Times */}
-                        <div>
+                        {/* <div>
                             <div className="flex items-center gap-2 mb-4">
                                 <h2 className="text-2xl font-bold !m-0">🚫 Prohibited Times</h2>
                             </div>
@@ -448,7 +442,7 @@ const PrayerTime: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
