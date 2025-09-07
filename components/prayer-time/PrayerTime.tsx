@@ -257,8 +257,9 @@ const PrayerTime: React.FC = () => {
     }, [prayerData?.data.date.hijri]);
 
     return (
-        <div className="bg-gradient-to-br from-indigo-900 via-sky-800 to-emerald-700 text-white min-h-screen">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        <div className="bg-gradient-to-br from-indigo-900 via-sky-800 to-emerald-700 text-white py-20">
+         {/* <div className="bg-[url('/bg-1.jpg')] bg-cover bg-center bg-no-repeat  text-white"> */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-9 gap-8">
                     {/* Left Side: Info + Image */}
                     <div className="col-span-9 lg:col-span-4">
