@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import SurahCard from '@/components/surah-card/SurahCard';
 import SurahCardSkeleton from '@/components/skeleton/SurahCardSkeleton';
 import Link from 'next/link';
+import AudioPlayer from '@/components/audio-player/AudioPlayer';
 
 const page = () => {
     // Fetch surahs data from the API
@@ -86,6 +87,7 @@ const page = () => {
                     </div>
                 </div>
             </div>
+            
         </div>
     )
 }

@@ -7,6 +7,7 @@ import { surahApi } from '@/services/allSurahApi';
 import { surahDetails } from '@/types/surah';
 import SingleAyat from '@/components/single-ayat/SingleAyat';
 import SingleAyatSkeleton from '@/components/single-ayat-skeleton/SingleAyatSkeleton';
+import AudioPlayer from '@/components/audio-player/AudioPlayer';
 
 const page = () => {
     const router = useRouter();
@@ -161,6 +162,7 @@ const page = () => {
                     ))}
                 </div>
             </div>
+                <AudioPlayer tracks={[{ title: surahDetails?.surahName || "Surah", src: surahDetails?.audio[0]?.url || "" }]} />
         </div>
     )
 }
