@@ -330,7 +330,7 @@ const PrayerTime: React.FC = () => {
                                     </div>
                                 </div>
                             )}
-                            <div className="my-6 grid grid-cols-2 gap-4 relative z-20">
+                            <div className="my-6 grid grid-cols-1 lg:grid-cols-2 gap-4 relative z-20">
                                 <div className="flex items-center gap-4 bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
                                     <div className="bg-white/20 p-2 rounded-xl">
                                         <Icon icon="f7:moon-zzz" width="30" height="30" />

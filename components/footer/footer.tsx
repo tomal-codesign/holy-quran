@@ -1,7 +1,7 @@
 // components/Footer.tsx
 export default function Footer() {
     return (
-        <footer className="relative bg-gradient-to-r from-green-800 via-emerald-700 to-green-800 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-white mt-12">
+        <footer className="relative bg-gradient-to-r from-green-800 via-emerald-700 to-green-800 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 text-white">
             {/* Top subtle border */}
             <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
 
