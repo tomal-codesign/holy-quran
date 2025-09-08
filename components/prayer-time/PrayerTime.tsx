@@ -4,29 +4,26 @@ import { Icon } from "@iconify/react";
 import Image from "next/image";
 import { Timeline } from "antd";
 
-import { useCurrentLocation } from "@/app/hooks/useCurrentLocation"; // if unused, remove
+import { useCurrentLocation } from "@/app/hooks/useCurrentLocation";
 import { islamApi } from "@/services/islamicApi/allIslamicApi";
 import type { PrayerData } from "@/types/prayerData";
 import { format, parse, subMinutes } from "date-fns";
 
-// Static icons (tree-shakable)
+// Static icons
 import Fajr from "../../public/prayer/fajr.png";
 import Dhuhr from "../../public/prayer/dhuhr.png";
 import Asr from "../../public/prayer/asr.png";
 import Maghrib from "../../public/prayer/maghrib.png";
 import Isha from "../../public/prayer/isha.png";
 
-// ────────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────
 // Types
-// ────────────────────────────────────────────────────────────────────────────────
-
-type Coords = { lat: number; lon: number; city?: string };
-
+// ─────────────────────────────────────────────
 type PrayerItem = {
     name: "Fajr" | "Dhuhr" | "Asr" | "Maghrib" | "Isha";
     icon: any;
-    time: Date; // start
-    lastTime: Date; // end
+    time: Date;
+    lastTime: Date;
 };
 
 type ProhibitedInterval = {
@@ -35,10 +32,9 @@ type ProhibitedInterval = {
     end: Date;
 };
 
-// ────────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────
 // Utilities
-// ────────────────────────────────────────────────────────────────────────────────
-
+// ─────────────────────────────────────────────
 const pad2 = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 const todayISODate = () => {
     const d = new Date();
@@ -48,7 +44,8 @@ const todayISODate = () => {
 const parseLocalTime = (timeHHmm: string, baseDateISO = todayISODate()) =>
     new Date(`${baseDateISO}T${timeHHmm}:00`);
 
-const subMinutesFromDate = (date: Date, minutes: number) => new Date(date.getTime() - minutes * 60000);
+const subMinutesFromDate = (date: Date, minutes: number) =>
+    new Date(date.getTime() - minutes * 60000);
 
 const formatDiff = (ms: number) => {
     if (ms <= 0) return "Now";
@@ -60,81 +57,20 @@ const formatDiff = (ms: number) => {
 
 const within = (d: Date, start: Date, end: Date) => d >= start && d <= end;
 
-// ────────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────
 // Component
-// ────────────────────────────────────────────────────────────────────────────────
-
+// ─────────────────────────────────────────────
 const PrayerTime: React.FC = () => {
-    // Location
-    const [coords, setCoords] = useState<Coords | null>(null);
+    // 🔹 Location hook
+    const { coords, loading: locationLoading, error, setCoords } =
+        useCurrentLocation();
 
-    // API data
+    // 🔹 API data
     const [prayerData, setPrayerData] = useState<PrayerData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const locationLoadedRef = useRef(false);
 
-    // A single ticking clock to drive all countdown UI (prevents multiple intervals)
+    // Single ticking clock
     const [tick, setTick] = useState<number>(() => Date.now());
-
-    // ── Load coords from localStorage or get current
-    useEffect(() => {
-        // Only run once
-        if (locationLoadedRef.current) return;
-        locationLoadedRef.current = true;
-
-        try {
-            const saved = localStorage.getItem("userCoords");
-            if (saved) {
-                setCoords(JSON.parse(saved));
-                return;
-            }
-        } catch (e) {
-            // ignore
-        }
-
-        if (!navigator.geolocation) return;
-
-        navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-                const base: Coords = {
-                    lat: pos.coords.latitude,
-                    lon: pos.coords.longitude,
-                    city: "",
-                };
-                try {
-                    const controller = new AbortController();
-                    const id = setTimeout(() => controller.abort(), 8000);
-                    const res = await fetch(
-                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`,
-                        {
-                            headers: {
-                                "User-Agent": "PrayerTimeApp/1.0 (contact: example@example.com)",
-                            },
-                            signal: controller.signal,
-                        }
-                    );
-                    clearTimeout(id);
-                    const data = await res.json();
-                    base.city =
-                        data?.address?.city ||
-                        data?.address?.town ||
-                        data?.address?.village ||
-                        data?.address?.county ||
-                        data?.address?.state ||
-                        "Unknown";
-                } catch {
-                    base.city = "Unknown";
-                }
-                setCoords(base);
-                try {
-                    localStorage.setItem("userCoords", JSON.stringify(base));
-                } catch { }
-            },
-            (err) => {
-                console.error("Location error:", err);
-            }
-        );
-    }, []);
 
     // ── Fetch prayer times when coords available
     useEffect(() => {
@@ -143,7 +79,10 @@ const PrayerTime: React.FC = () => {
         (async () => {
             setIsLoading(true);
             try {
-                const response = await islamApi.getPrayerTime(String(coords.lat), String(coords.lon));
+                const response = await islamApi.getPrayerTime(
+                    String(coords.lat),
+                    String(coords.lon)
+                );
                 if (mounted) setPrayerData(response);
             } catch (error) {
                 console.error("Error fetching prayer times:", error);
@@ -156,9 +95,10 @@ const PrayerTime: React.FC = () => {
         };
     }, [coords]);
 
-    // ── Build prayers & prohibited intervals (pure derived state)
+    // ── Build prayers & prohibited intervals
     const { prayers, prohibited } = useMemo(() => {
-        if (!prayerData) return { prayers: [] as PrayerItem[], prohibited: [] as ProhibitedInterval[] };
+        if (!prayerData)
+            return { prayers: [] as PrayerItem[], prohibited: [] as ProhibitedInterval[] };
 
         const times = prayerData.data.times;
         const today = todayISODate();
@@ -182,7 +122,6 @@ const PrayerTime: React.FC = () => {
             { name: "Isha", icon: Isha, time: isha, lastTime: subMinutesFromDate(fajrNextDay, 1) },
         ];
 
-        // prohibited windows
         const afterSunriseEnd = new Date(sunrise.getTime() + 20 * 60000);
         const beforeDhuhrStart = new Date(dhuhr.getTime() - 5 * 60000);
         const beforeMaghribStart = new Date(maghrib.getTime() - 15 * 60000);
@@ -196,16 +135,21 @@ const PrayerTime: React.FC = () => {
         return { prayers: p, prohibited: pr };
     }, [prayerData]);
 
-    // ── Compute current & next prayer from a single ticking clock
+    // ── Compute current & next prayer
     const { now, currentPrayer, nextPrayer, timeLeftToNext } = useMemo(() => {
         const now = new Date(tick);
 
         if (!prayers.length) {
-            return { now, currentPrayer: null as PrayerItem | null, nextPrayer: null as PrayerItem | null, timeLeftToNext: "" };
+            return {
+                now,
+                currentPrayer: null,
+                nextPrayer: null,
+                timeLeftToNext: "",
+            };
         }
 
         const current = prayers.find((p) => within(now, p.time, p.lastTime)) || null;
-        const upcoming = prayers.find((p) => p.time > now) || prayers[0]; // wraps to first of next day
+        const upcoming = prayers.find((p) => p.time > now) || prayers[0];
         const diff = upcoming ? upcoming.time.getTime() - now.getTime() : 0;
 
         return {
@@ -216,49 +160,54 @@ const PrayerTime: React.FC = () => {
         };
     }, [prayers, tick]);
 
-    // ── Derive prohibited countdowns on each tick (no extra intervals)
+    // ── Prohibited countdowns
     const prohibitedCountdowns = useMemo(() => {
         const now = new Date(tick);
         return prohibited.map((t) => {
-            if (now < t.start) return { name: t.name, countdown: `Starts in ${formatDiff(t.start.getTime() - now.getTime())}` };
-            if (within(now, t.start, t.end)) return { name: t.name, countdown: `Ends in ${formatDiff(t.end.getTime() - now.getTime())}` };
+            if (now < t.start)
+                return {
+                    name: t.name,
+                    countdown: `Starts in ${formatDiff(t.start.getTime() - now.getTime())}`,
+                };
+            if (within(now, t.start, t.end))
+                return {
+                    name: t.name,
+                    countdown: `Ends in ${formatDiff(t.end.getTime() - now.getTime())}`,
+                };
             return { name: t.name, countdown: "Ended" };
         });
     }, [prohibited, tick]);
 
-    // ── Identify the currently-active prohibited window (if any)
     const activeProhibited = useMemo(() => {
         const now = new Date(tick);
         return prohibited.find((t) => within(now, t.start, t.end));
     }, [prohibited, tick]);
 
-    // ── Single 1s interval that updates "tick" (drives all countdown UIs)
+    // ── Single 1s interval
     useEffect(() => {
         const id = setInterval(() => setTick(Date.now()), 1000);
         return () => clearInterval(id);
     }, []);
 
-    // Handlers
+    // Reset Location
     const handleResetLocation = useCallback(() => {
         try {
             localStorage.removeItem("userCoords");
         } catch { }
         setCoords(null);
-        // reload to re-trigger geolocation flow cleanly
         window.location.reload();
-    }, []);
+    }, [setCoords]);
 
-    // UI helpers
+    // Hijri
     const hijriText = useMemo(() => {
         const h = prayerData?.data.date.hijri;
         if (!h) return "";
-        // the original added +1 to the day; remove unless you have a reason
         return `${h.weekday.en}, ${h.day} ${h.month.en} ${h.year} AH`;
     }, [prayerData?.data.date.hijri]);
 
     return (
         <div className="bg-gradient-to-br from-indigo-900 via-sky-800 to-emerald-700 text-white py-20">
-         {/* <div className="bg-[url('/bg-1.jpg')] bg-cover bg-center bg-no-repeat  text-white"> */}
+            {/* <div className="bg-[url('/bg-1.jpg')] bg-cover bg-center bg-no-repeat  text-white"> */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-9 gap-8">
                     {/* Left Side: Info + Image */}
